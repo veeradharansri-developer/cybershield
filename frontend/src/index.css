@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cyber-black: #060b14;
+  --color-cyber-dark: #0d1b2e;
+  --color-cyber-navy: #0f2547;
+  --color-cyber-card: #111d30;
+  --color-cyber-border: #1e3a5f;
+  --color-cyber-green: #00ff88;
+  --color-cyber-cyan: #00d4ff;
+  --color-cyber-amber: #f59e0b;
+  --color-cyber-red: #ff4444;
+  --color-cyber-text: #e2e8f0;
+  --color-cyber-muted: #64748b;
+  --color-cyber-highlight: #1a3a5c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #060b14;
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0d1b2e;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e3a5f;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00d4ff40;
+}
+
+/* Grid scan-line effect */
+.scan-bg {
+  background-image: 
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Glow effects */
+.glow-green {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
+}
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+}
+.text-glow-green {
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+}
+.text-glow-cyan {
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+/* Animated border */
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(0, 212, 255, 0.3); }
+  50% { border-color: rgba(0, 255, 136, 0.5); }
+}
+.animate-border {
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.5); }
+}
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+/* Status badge colors */
+.badge-anomaly {
+  background: rgba(255, 68, 68, 0.15);
+  color: #ff4444;
+  border: 1px solid rgba(255, 68, 68, 0.3);
+}
+.badge-normal {
+  background: rgba(0, 255, 136, 0.1);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.25);
+}
+.badge-info {
+  background: rgba(0, 212, 255, 0.1);
+  color: #00d4ff;
+  border: 1px solid rgba(0, 212, 255, 0.25);
+}
+
+/* Cyber button */
+.btn-cyber {
+  background: linear-gradient(135deg, #00d4ff20, #00ff8820);
+  border: 1px solid #00d4ff60;
+  color: #00d4ff;
+  transition: all 0.2s;
+}
+.btn-cyber:hover {
+  background: linear-gradient(135deg, #00d4ff40, #00ff8840);
+  border-color: #00d4ff;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+/* Card */
+.cyber-card {
+  background: #111d30;
+  border: 1px solid #1e3a5f;
+  border-radius: 12px;
+}
+.cyber-card:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+/* Table row hover */
+.table-row-hover:hover {
+  background: rgba(0, 212, 255, 0.05);
+  cursor: pointer;
+}
+
+/* Recharts tooltip */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: #0d1b2e !important;
+  border: 1px solid #1e3a5f !important;
+  border-radius: 8px !important;
+}
