@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 
 interface SessionState {
@@ -26,6 +26,8 @@ interface SessionContextType {
   reset: () => void;
 }
 
+const STORAGE_KEY = 'cybershield_session';
+
 const defaultSession: SessionState = {
   sessionId: null,
   filename: null,
@@ -39,6 +41,28 @@ const defaultSession: SessionState = {
   anomalyResults: null,
 };
 
+function loadStoredSession(): SessionState {
+  if (typeof window === 'undefined') return defaultSession;
+
+  try {
+    const value = window.localStorage.getItem(STORAGE_KEY);
+    if (!value) return defaultSession;
+
+    const parsed = JSON.parse(value) as Partial<SessionState>;
+    return {
+      ...defaultSession,
+      ...parsed,
+      columns: parsed.columns ?? [],
+      numericCols: parsed.numericCols ?? [],
+      categoricalCols: parsed.categoricalCols ?? [],
+      mapping: parsed.mapping ?? {},
+      anomalyResults: parsed.anomalyResults ?? null,
+    };
+  } catch {
+    return defaultSession;
+  }
+}
+
 const SessionContext = createContext<SessionContextType>({
   session: defaultSession,
   setSession: () => {},
@@ -46,8 +70,24 @@ const SessionContext = createContext<SessionContextType>({
 });
 
 export const SessionProvider = ({ children }: { children: ReactNode }) => {
-  const [session, setSession] = useState<SessionState>(defaultSession);
-  const reset = () => setSession(defaultSession);
+  const [session, setSession] = useState<SessionState>(() => loadStoredSession());
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (session.sessionId) {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    } else {
+      window.localStorage.removeItem(STORAGE_KEY);
+    }
+  }, [session]);
+
+  const reset = () => {
+    setSession(defaultSession);
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(STORAGE_KEY);
+    }
+  };
+
   return (
     <SessionContext.Provider value={{ session, setSession, reset }}>
       {children}

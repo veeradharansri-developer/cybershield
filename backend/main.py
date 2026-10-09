@@ -62,6 +62,10 @@ def sanitize(val: Any) -> Any:
     """Convert non-JSON-serializable values."""
     if val is None:
         return None
+    if isinstance(val, (np.bool_,)):
+        return bool(val)
+    if isinstance(val, bool):
+        return val
     if isinstance(val, float) and (math.isnan(val) or math.isinf(val)):
         return None
     if isinstance(val, (np.integer,)):
@@ -316,7 +320,9 @@ async def upload_dataset(file: UploadFile = File(...)):
 def load_sample(dataset: str = "cicids"):
     """Load the prebuilt sample dataset."""
     import sys
-    sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+    backend_dir = Path(__file__).resolve().parent
+    if str(backend_dir) not in sys.path:
+        sys.path.insert(0, str(backend_dir))
     try:
         from generate_sample_data import generate_cicids2017_sample, generate_unsw_sample
     except Exception:
@@ -389,7 +395,7 @@ def _get_df(session_id: str) -> pd.DataFrame:
     s = SESSIONS.get(session_id)
     if not s:
         raise HTTPException(404, "Session not found")
-    df = s.get("clean_df") or s.get("raw_df")
+    df = s.get("clean_df") if s.get("clean_df") is not None else s.get("raw_df")
     if df is None:
         raise HTTPException(400, "No data loaded")
     return df
@@ -698,7 +704,7 @@ def explain_record(session_id: str, record_id: int):
 
     ann = s["anomaly_results"]
     features = s["anomaly_features"]
-    df_raw = s.get("clean_df") or s.get("raw_df")
+    df_raw = s.get("clean_df") if s.get("clean_df") is not None else s.get("raw_df")
     mapping = s["mapping"]
     label_col = mapping.get("label")
     z_thresh = s.get("z_thresh", 3.0)
